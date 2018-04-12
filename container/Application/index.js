@@ -1,7 +1,7 @@
 import React from 'react'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import Header from '../../component/Header'
-import Footer from '../../component/Footer'
 
 import './style.scss'
 
@@ -13,11 +13,10 @@ export default class Application extends React.Component{
 
   render() {
     return (
-      <div>
+      <MuiThemeProvider>
         <Header />
         {this.props.children}
-        <Footer />
-      </div>
+      </MuiThemeProvider>
     )
   }
 }
