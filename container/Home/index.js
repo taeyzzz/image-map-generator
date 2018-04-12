@@ -108,6 +108,18 @@ export default class Home extends React.Component{
              />
           </div>
         </div>
+        <div>
+          <Paper zDepth={3}>
+            <div className="clippath-description">
+              The clipPath SVG element defines a clipping path. A clipping path is used/referenced using the clip-path property.
+              The clipping path restricts the region to which paint can be applied. Conceptually, any parts of the drawing that lie outside of the region bounded by the currently active clipping path are not drawn.
+              A clipping path is conceptually equivalent to a custom viewport for the referencing element.
+              Thus, it affects the rendering of an element, but not the element's inherent geometry.
+              The bounding box of a clipped element (meaning, an element which references a clipPath element via a clip-path property,
+              or a child of the referencing element) must remain the same as if it were not clipped.
+            </div>
+          </Paper>
+        </div>
       </div>
     )
     if(this.state.imagePreviewUrl){
@@ -259,7 +271,7 @@ export default class Home extends React.Component{
     return (
       <Toolbar>
         <ToolbarGroup firstChild={true}>
-          <div>
+          <div className="header-title">
             Image Map Generator
           </div>
         </ToolbarGroup>

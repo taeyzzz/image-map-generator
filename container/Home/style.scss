@@ -1,5 +1,8 @@
 .header-container{
   width: 100%;
+  .header-title{
+    padding-left: 20px;
+  }
 }
 .home-container{
   padding: 100px;
@@ -26,6 +29,13 @@
       >div{
         margin: 0px 40px;
       }
+    }
+    .clippath-description{
+      margin: 20px 0px;
+      padding: 20px;
+      border-radius: 5px;
+      font-size: 0.8em;
+      color: rgba(0,0,0,0.87);
     }
   }
   .image-stage-container{
