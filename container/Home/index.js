@@ -1,5 +1,12 @@
 import React from 'react'
 import Dropzone from 'react-dropzone'
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
+import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
+import MenuItem from 'material-ui/MenuItem';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {
@@ -12,6 +19,10 @@ import {
 } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
+import Modal from 'react-responsive-modal';
+import CodeMirror from 'react-codemirror';
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/htmlmixed/htmlmixed'
 import RemoveIcon from 'react-icons/lib/fa/close'
 
 import './style.scss'
@@ -20,6 +31,8 @@ export default class Home extends React.Component{
   constructor(props){
     super(props)
     this.state = {
+      showResult: false,
+      value: 'polygon',
       imageUrl: '',
       imagePreviewUrl: undefined,
       imageWidth: undefined,
@@ -29,6 +42,8 @@ export default class Home extends React.Component{
       listPolygon: []
     }
   }
+
+  handleChange = (event, index, value) => this.setState({value});
 
   onDrop(files) {
     let reader = new FileReader();
@@ -240,13 +255,89 @@ export default class Home extends React.Component{
     return listMap
   }
 
+  getheader(){
+    return (
+      <Toolbar>
+        <ToolbarGroup firstChild={true}>
+          <div>
+            Image Map Generator
+          </div>
+        </ToolbarGroup>
+        <ToolbarGroup>
+          <ToolbarTitle text="Shape" />
+          <ToolbarSeparator />
+          <DropDownMenu value={this.state.value} onChange={this.handleChange}>
+            <MenuItem value={"polygon"} primaryText="Polygon" />
+            <MenuItem value={'circle'} primaryText="Circle" />
+            <MenuItem value={'rectangle'} primaryText="Rectangle" />
+          </DropDownMenu>
+          <ToolbarSeparator />
+          <RaisedButton label="Get Coordinate" primary={true} onClick={() => this.showResult()}/>
+        </ToolbarGroup>
+      </Toolbar>
+    )
+  }
+
+  showResult(){
+    this.setState({
+      showResult: true
+    })
+  }
+
+  closeResult(){
+    this.setState({
+      showResult: false
+    })
+  }
+
+  getResultModal(){
+    let output = null
+    if(this.state.showResult){
+      let arrayPoint = this.state.listPolygon.map((obj, index) => {
+        let points = obj.coordinates.map((objCoor) => {
+          return `${objCoor.x},${objCoor.y}`
+        })
+        points = points.join(' ')
+        return `<polygon points="${points}" />`
+      })
+      arrayPoint = arrayPoint.join('\n')
+      const code = `
+<svg width="0" height="0">
+<clipPath id="clipPath">
+  ${arrayPoint}
+</clipPath>
+</svg>
+      `
+      output = (
+        <Modal open={true} onClose={() => this.closeResult()}>
+          <CodeMirror
+            value={code}
+            width="100%"
+            height="100%"
+            options={{
+              mode: 'htmlmixed',
+              readOnly: true
+            }}
+          />
+        </Modal>
+      )
+    }
+    return output
+  }
+
   render() {
     return (
-      <div className="home-container">
-        <div className="container">
-          { this.getImageContainer() }
+      <div>
+        <div className="header-container">
+          {this.getheader()}
         </div>
-        { this.getListImageMap() }
+        <div className="home-container">
+          <div className="container">
+            { this.getImageContainer() }
+          </div>
+          { this.getListImageMap() }
+        </div>
+        {this.getResultModal()}
       </div>
     )
   }
